@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-//TODO: Implementar que los id de las tareas se pongan solos (del 1 en adelante).
-// Si se elimina una tarea igual no deberian modificarse los ID de la tarea por que podria generar problemas
 
 public class GestorDeTareas {
 
@@ -58,55 +56,56 @@ public class GestorDeTareas {
     }
 
     public void agregarTarea1(Scanner t) {
-        int idt;
 
-        // ! id
-        while (true) {
-            System.out.println("\nAgregar ID de la tarea:");
-            var entrada = t.nextLine().trim();
-            //trim "recorta" los espacios de los costados
-
-            try {
-                var idNumero = Integer.parseInt(entrada);
-                if (mapaTareas.containsKey(idNumero)) {
-                    System.out.println("Ya existe una tarea con ese ID, prueba de nuevo");
-                } else {
-                    idt = idNumero;
-                    System.out.println("ID de tarea confirmado.");
-                    break; // Sale del while
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("\nError: Debes ingresar un número válido.");
-            }
-        }
 
         // ! Nombre
-        System.out.println("\nAgrega el nombre de la tarea:");
-        String nombreNuevaTarea = t.nextLine().trim();
+        String nombreNuevaTarea;
+        while(true) {
+            System.out.println("\nAgrega el nombre de la tarea:");
+            nombreNuevaTarea = t.nextLine().trim();
+            if(nombreNuevaTarea.length() > 1) {
+                System.out.printf("\nNombre de tarea \"%s\" confirmado.", nombreNuevaTarea);
+                break;
+            } else {System.out.println("Error: Debes ingresar un nombre de tarea válido, de mas de un caracter. \nPrueba de nuevo:");}
+        }
 
         // ! Prioridad
+        String prioridad;
         while (true) {
-            System.out.println("\n¿Prioridad de la tarea? (1 a 5)");
-            var prioridad = t.nextLine().trim();
-            // t.nextLine(); // limpiar buffer1
+            System.out.println("\n\n¿Prioridad de la tarea? del 5 (mas urgente) al 1 (menos urgente)");
+            prioridad = t.nextLine().trim();
+//             t.nextLine(); // limpiar buffer1
 
             try {
                 if (Integer.parseInt(prioridad) < 1 || Integer.parseInt(prioridad) > 5) {
-                    System.out.println("\nPrioridad invalida. Debe ser un nivel entre 1 y 5.");
+                    System.out.println("Prioridad invalida. Debe ser un nivel entre 1 y 5.");
                 } else {
                     System.out.println("\nEs una prioridad de tarea valida!");
-                    Tarea tareaNueva = new Tarea(nombreNuevaTarea, Integer.parseInt(prioridad));
-                    mapaTareas.put(idt, tareaNueva);
-
-                    tareaNueva.ejecutar(); // "Mensaje de Confirmacion"
-                    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                    System.out.println();
                     break;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Error " + prioridad + " : Debes ingresar un número de prioridad válido.");
             }
         }
+
+        // ! Id
+        int idt;
+
+        if(mapaTareas.isEmpty()) {
+            idt = 1;
+        } else {
+            int idMaximo = mapaTareas.keySet().stream()
+                .max(Integer::compare)
+                .get();
+             idt = idMaximo + 1;}
+
+        //! Armador y asignador de Id
+        Tarea tareaNueva = new Tarea(nombreNuevaTarea, Integer.parseInt(prioridad));
+        mapaTareas.put(idt, tareaNueva);
+
+        tareaNueva.ejecutar(); // "Mensaje de Confirmacion"
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println();
     }
 
     public void verTareas2() {
@@ -140,7 +139,7 @@ public class GestorDeTareas {
             mapaTareas.forEach((id, tarea) -> {
                 System.out.print(id + " • ");
             });
-            System.out.println();
+//            System.out.println();
 
             var longitudDelMapa = mapaTareas.size();
             System.out.printf("\n¿Qué tarea deseas eliminar? Existen %d tareas. Indica el id:%n",
@@ -188,14 +187,20 @@ public class GestorDeTareas {
     public void editarTarea4(Scanner t) {
 
         if (mapaTareas.isEmpty()) {
-            System.out.println("No existen tareas para editar.");
+            System.out.println("\nNo existen tareas para editar.");
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             return;
         }
 
         while (true) {
+
+            System.out.print("\nLos ids de las tareas son: ");
+            mapaTareas.forEach((id, tarea) -> {
+                System.out.print(id + " • ");
+            });
+
             var longitudDelMapa = mapaTareas.size();
-            System.out.printf("¿Qué tarea deseas editar? Existen %d tareas. Indica el id:%n",
+            System.out.printf("\n¿Qué tarea deseas editar? Existen %d tareas. Indica el id:%n",
                     longitudDelMapa);
 
             if (!t.hasNextInt()) {
@@ -213,7 +218,7 @@ public class GestorDeTareas {
             }
 
             System.out.println(
-                    "La tarea a editar es: " + mapaTareas.get(idElegido) + ". ¿Estás seguro? Responde 'si' o 'no'.");
+                    "\nLa tarea a editar es: " + mapaTareas.get(idElegido) + ". ¿Estás seguro? Responde 'si' o 'no'.");
             String respuesta = t.nextLine();
 
             if (respuesta.equalsIgnoreCase("si")) {
