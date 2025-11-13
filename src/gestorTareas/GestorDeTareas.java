@@ -15,7 +15,7 @@ public class GestorDeTareas {
 
     public void mostrarMenu() {
         // ? Menu
-        System.out.println("\n~~~ GESTOR DE TAREAS 2.0 ~~~");
+        System.out.println("~~~ GESTOR DE TAREAS 2.0 ~~~");
         System.out.println("1 - Agregar nueva tarea");
         System.out.println("2 - Ver tareas pendientes");
         System.out.println("3 - Eliminar una tarea");
@@ -29,10 +29,9 @@ public class GestorDeTareas {
         while (true) {
         System.out.println("\nElige una opcion a continuacion: ");
             var entrada = s.nextLine().trim();
-
             try {
-                int casiOpcion = Integer.parseInt(entrada);
-                return casiOpcion;
+//                int casiOpcion = Integer.parseInt(entrada);
+                return Integer.parseInt(entrada);
             } catch (NumberFormatException e) {
                 System.out.println("Error: Debes ingresar un número válido.");
             }
@@ -43,14 +42,8 @@ public class GestorDeTareas {
     public void motorTareas(int op, Scanner teclado) {
         switch (op) {
 
-            // case 1:
-            // agregarTarea1(teclado);
-            // break;
-            // ? ↖ asi los tenia antes
-
-            case 1 -> agregarTarea1(teclado); // * FORMA MAS MODERNA DE ESCRIBIR SWITCH
-            // * El break está implícito en la propia flecha. Es imposible que "caiga" al
-            // siguiente case.
+            case 1 -> agregarTarea1(teclado);
+            // * El break está implícito en la propia flecha. Es imposible que "caiga" al siguiente case.
             case 2 -> verTareas2();
             case 3 -> eliminarTarea3(teclado);
             case 4 -> editarTarea4(teclado);
@@ -69,7 +62,7 @@ public class GestorDeTareas {
 
         // ! id
         while (true) {
-            System.out.println("Agregar ID de la tarea:");
+            System.out.println("\nAgregar ID de la tarea:");
             var entrada = t.nextLine().trim();
             //trim "recorta" los espacios de los costados
 
@@ -83,25 +76,25 @@ public class GestorDeTareas {
                     break; // Sale del while
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Error: Debes ingresar un número válido.");
+                System.out.println("\nError: Debes ingresar un número válido.");
             }
         }
 
         // ! Nombre
-        System.out.println("Agrega el nombre de la tarea:");
+        System.out.println("\nAgrega el nombre de la tarea:");
         String nombreNuevaTarea = t.nextLine().trim();
 
         // ! Prioridad
         while (true) {
-            System.out.println("¿Prioridad de la tarea? (1 a 5)");
+            System.out.println("\n¿Prioridad de la tarea? (1 a 5)");
             var prioridad = t.nextLine().trim();
             // t.nextLine(); // limpiar buffer1
 
             try {
                 if (Integer.parseInt(prioridad) < 1 || Integer.parseInt(prioridad) > 5) {
-                    System.out.println("Prioridad invalida. Debe ser un nivel entre 1 y 5.");
+                    System.out.println("\nPrioridad invalida. Debe ser un nivel entre 1 y 5.");
                 } else {
-                    System.out.println("Es una prioridad de tarea valida!");
+                    System.out.println("\nEs una prioridad de tarea valida!");
                     Tarea tareaNueva = new Tarea(nombreNuevaTarea, Integer.parseInt(prioridad));
                     mapaTareas.put(idt, tareaNueva);
 
@@ -119,56 +112,47 @@ public class GestorDeTareas {
     public void verTareas2() {
 
         if (mapaTareas.isEmpty()) {
-            System.out.println("No existen tareas cargadas.");
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            System.out.println("\nNo existen tareas cargadas.");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             return;
-            // ? Ese return se llama "Clausula de Guardia" y hace terminar la ejecución del
-            // método de inmediato
-            // ? (verTareas2) y devolver el control a la línea de código que llamó a
-            // verTareas2().
+        }
 
-        } else {
-            System.out.println("===Lista de tareas: ===");
+        System.out.println("\n===Lista de tareas: ===");
 
-            //TODO: lambda + forEach
             mapaTareas.forEach((id, tarea) -> {
-                System.out.println("ID: " + id + " - " + tarea);
+                System.out.println("\nID: " + id + " - " + tarea);
             });
 
-            // * Listando el mapa de tareas
-//            for (Map.Entry<Integer, Tarea> tarea : mapaTareas.entrySet()) {
-//                System.out.println("ID: " + tarea.getKey() + " - " + tarea.getValue());
-//            }
+            System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-        }
     }
 
     public void eliminarTarea3(Scanner t) {
 
         if (mapaTareas.isEmpty()) {
-            System.out.println("No existen tareas para eliminar.");
+            System.out.println("\nNo existen tareas para eliminar.");
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             return;
         }
 
         while (true) {
+            System.out.print("\nLos ids de las tareas son: ");
+            mapaTareas.forEach((id, tarea) -> {
+                System.out.print(id + " • ");
+            });
+            System.out.println();
 
             var longitudDelMapa = mapaTareas.size();
-            System.out.printf("¿Qué tarea deseas eliminar? Existen %d tareas. Indica el id:%n",
+            System.out.printf("\n¿Qué tarea deseas eliminar? Existen %d tareas. Indica el id:%n",
                     longitudDelMapa);
 
             // validar que venga un int:
             if (!t.hasNextInt()) {
-                // * El hasNextInt no lee el valor si no que solo valida que sea de tipo entero
-                // (int), y devuelve True or False
 
                 System.out.println("Por favor ingresa un número válido.");
                 t.nextLine(); // limpiar lo que haya
 
                 continue;
-                // * El continue dice "Ignora el código restante en esta iteración y salta al
-                // comienzo de la próxima iteración del bucle (while (true)"
             }
 
             var idElegido = t.nextInt();
@@ -179,20 +163,25 @@ public class GestorDeTareas {
                 continue;
             }
 
-            System.out.println("La tarea a eliminar es:\n" + mapaTareas.get(idElegido)
-                    + " \n¿Estás seguro? Responde 'si' o 'no'.");
-            var respuesta = t.nextLine();
+            while (true) {
+                System.out.println("\nLa tarea a eliminar es:\n\n" + mapaTareas.get(idElegido)
+                        + "\n\n¿Estás seguro? Responde 'si' o 'no'.");
+                var respuesta = t.nextLine();
 
-            if (respuesta.equalsIgnoreCase("si")) {
-                // listaDeTareas.remove(pos);
-                mapaTareas.remove(idElegido);
-                System.out.println("¡Tarea eliminada!\n");
-                break;
-            } else {
-                System.out.println("Ok, no se eliminó la tarea.");
+                if (respuesta.equalsIgnoreCase("si")) {
+                    // listaDeTareas.remove(pos);
+                    mapaTareas.remove(idElegido);
+                    System.out.println("¡Tarea eliminada!\n");
+                    break;
+                } else if (respuesta.equalsIgnoreCase("no")) {
+                    System.out.println("\nOk, no se eliminó la tarea.");
+                    break;
+                } else {
+                    System.out.println("\nNo ingresaste una respuesta valida; es si o no.");
+                }
+//                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             }
-
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            break;
         }
     }
 

@@ -9,7 +9,7 @@ public class app {
         GestorDeTareas gestor = new GestorDeTareas();
 
         try (Scanner scTeclado = new Scanner(System.in)) {
-            int opcionElegida;C
+            int opcionElegida;
 
             do {
                 gestor.mostrarMenu();
