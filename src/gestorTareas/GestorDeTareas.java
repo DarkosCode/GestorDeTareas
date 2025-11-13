@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class GestorDeTareas {
 
     // Atributo de instancia (NO static) y usando la interfaz List
-    private Map<Integer, Tarea> mapaTareas = new HashMap<>();
+    private final Map<Integer, Tarea> mapaTareas = new HashMap<>();
     // * Private para mantener el "Encapsulamiento"
 
     public void mostrarMenu() {
