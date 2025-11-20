@@ -6,14 +6,12 @@ import java.util.Scanner;
 
 public class GestorDeTareas {
 
-    // Atributo de instancia (NO static) y usando la interfaz List
     private final Map<Integer, Tarea> mapaTareas = new HashMap<>();
-    // * Private para mantener el "Encapsulamiento"
     private int ultimoId = 0;
 
     public void mostrarMenu() {
         // ? Menu
-        System.out.println("~~~ GESTOR DE TAREAS 2.0 ~~~");
+        System.out.println("\n~~~ GESTOR DE TAREAS 2.0 ~~~");
         System.out.println("1 - Agregar nueva tarea");
         System.out.println("2 - Ver tareas pendientes");
         System.out.println("3 - Eliminar una tarea");
@@ -51,7 +49,7 @@ public class GestorDeTareas {
             default -> {
                 System.out.println("No existe esa opcion de tarea!, vuelve a intentarlo.");
                 System.out.println();
-                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             }
         }
     }
@@ -64,7 +62,7 @@ public class GestorDeTareas {
             System.out.println("\nAgrega el nombre de la tarea:");
             nombreNuevaTarea = t.nextLine().trim();
             if (nombreNuevaTarea.length() > 1) {
-                System.out.printf("\nNombre de tarea \"%s\" confirmado.", nombreNuevaTarea);
+                System.out.printf("Nombre de tarea \"%s\" confirmado.", nombreNuevaTarea);
                 break;
             } else {
                 System.out.println(
@@ -75,7 +73,7 @@ public class GestorDeTareas {
         // ! Prioridad
         String prioridad;
         while (true) {
-            System.out.println("\n\n¿Prioridad de la tarea? del 5 (mas urgente) al 1 (menos urgente)");
+            System.out.println("\n¿Prioridad de la tarea? del 5 (mas urgente) al 1 (menos urgente):");
             prioridad = t.nextLine().trim();
             // t.nextLine(); // limpiar buffer1
 
@@ -83,7 +81,7 @@ public class GestorDeTareas {
                 if (Integer.parseInt(prioridad) < 1 || Integer.parseInt(prioridad) > 5) {
                     System.out.println("Prioridad invalida. Debe ser un nivel entre 1 y 5.");
                 } else {
-                    System.out.println("\nEs una prioridad de tarea valida!");
+                    System.out.println("Es una prioridad de tarea valida!");
                     break;
                 }
             } catch (NumberFormatException e) {
@@ -100,7 +98,7 @@ public class GestorDeTareas {
         mapaTareas.put(idt, tareaNueva);
 
         tareaNueva.ejecutar(); // "Mensaje de Confirmacion"
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         System.out.println();
     }
 
@@ -108,7 +106,7 @@ public class GestorDeTareas {
 
         if (mapaTareas.isEmpty()) {
             System.out.println("\nNo existen tareas cargadas.");
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             return;
         }
 
@@ -118,7 +116,7 @@ public class GestorDeTareas {
             System.out.println("\nID: " + id + " - " + tarea);
         });
 
-        System.out.println("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
     }
 
@@ -126,7 +124,7 @@ public class GestorDeTareas {
 
         if (mapaTareas.isEmpty()) {
             System.out.println("\nNo existen tareas para eliminar.");
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             return;
         }
 
@@ -138,19 +136,11 @@ public class GestorDeTareas {
             // System.out.println();
 
             var longitudDelMapa = mapaTareas.size();
-            System.out.printf("\n¿Qué tarea deseas eliminar? Existen %d tareas. Indica el id:%n",
+            System.out.printf("\n¿Qué tarea deseas eliminar? Existen %d tareas. Indica el id: ",
                     longitudDelMapa);
 
-            // validar que venga un int:
-            if (!t.hasNextInt()) {
-
-                System.out.println("Por favor ingresa un número válido.");
-                t.nextLine(); // limpiar lo que haya
-
-                continue;
-            }
-
-            var idElegido = t.nextInt();
+            //?
+            int idElegido = validarSiIdEsNumero(t);
             t.nextLine(); // limpiar buffer
 
             if (!mapaTareas.containsKey(idElegido)) {
@@ -159,8 +149,8 @@ public class GestorDeTareas {
             }
 
             while (true) {
-                System.out.println("\nLa tarea a eliminar es:\n\n" + mapaTareas.get(idElegido)
-                        + "\n\n¿Estás seguro? Responde 'si' o 'no'.");
+                System.out.println("\nLa tarea a eliminar es:\n" + mapaTareas.get(idElegido)
+                        + "\n¿Estás seguro? Responde 'si' o 'no'.");
                 var respuesta = t.nextLine();
 
                 if (respuesta.equalsIgnoreCase("si")) {
@@ -169,22 +159,20 @@ public class GestorDeTareas {
                     System.out.println("¡Tarea eliminada!\n");
                     break;
                 } else if (respuesta.equalsIgnoreCase("no")) {
-                    System.out.println("\nOk, no se eliminó la tarea.");
+                    System.out.println("Ok, no se eliminó la tarea.\n");
                     break;
                 } else {
                     System.out.println("\nNo ingresaste una respuesta valida; es si o no.");
                 }
-                // System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             }
             break;
         }
     }
 
     public void editarTarea4(Scanner t) {
-
         if (mapaTareas.isEmpty()) {
             System.out.println("\nNo existen tareas para editar.");
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             return;
         }
         while (true) {
@@ -194,14 +182,8 @@ public class GestorDeTareas {
             });
             System.out.print("\nIngrese el ID de la tarea a editar (0 para cancelar): ");
 
-            if (!t.hasNextInt()) {
-                System.out.println("Error: Debe ingresar un número.");
-                t.nextLine(); // Limpiar buffer
-                continue;
-            }
-
-            int idElegido = t.nextInt();
-            t.nextLine(); // Limpiar buffer
+            int idElegido = validarSiIdEsNumero(t);
+                t.nextLine(); // limpiar buffer
 
             // Salir si el usuario ingresa 0
             if (idElegido == 0) {
@@ -224,7 +206,7 @@ public class GestorDeTareas {
                 System.out.println(tareaAEditar);
                 System.out.print("¿Desea editar esta tarea? (si/no): ");
                 String respuesta = t.nextLine().trim().toLowerCase();
-
+//?
                 if (respuesta.equals("no")) {
                     System.out.println("Operación cancelada.");
                     seguirEditando = false;
@@ -241,7 +223,7 @@ public class GestorDeTareas {
                     System.out.println("1. Nombre de la tarea");
                     System.out.println("2. Prioridad");
                     System.out.println("0. Volver al menú principal");
-                    // System.out.print("Opción: ");
+                    //?
 
                     if (!t.hasNextInt()) {
                         System.out.println("\nError: Debe ingresar un número.");
@@ -310,7 +292,7 @@ public class GestorDeTareas {
 
         if (mapaTareas.isEmpty()) {
             System.out.println("No existen tareas cargadas.");
-            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
             return;
         }
@@ -331,7 +313,19 @@ public class GestorDeTareas {
 
     public void salir6() {
         System.out.println("Gracias por usar el gestor de tareas 2.0, vuelva prontos!");
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    }
+
+    private static int validarSiIdEsNumero(Scanner t) {
+        while (true) {
+            if (!t.hasNextInt()) {
+                System.out.println("Error: Debe ingresar un número.");
+                t.nextLine(); // Limpiar buffer
+            } else {
+                int id = t.nextInt();
+                return id;
+            }
+        }
     }
 
     // ? Cierre de toda la public class

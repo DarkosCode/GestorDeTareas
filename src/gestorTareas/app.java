@@ -3,6 +3,7 @@ package gestorTareas;
 import java.util.Scanner;
 
 public class app {
+//TODO: Crear una excepcion personalizada para probar
 
     public static void main(String[] args) {
 
