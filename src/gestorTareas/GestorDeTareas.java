@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-
 public class GestorDeTareas {
 
     // Atributo de instancia (NO static) y usando la interfaz List
     private final Map<Integer, Tarea> mapaTareas = new HashMap<>();
     // * Private para mantener el "Encapsulamiento"
+    private int ultimoId = 0;
 
     public void mostrarMenu() {
         // ? Menu
@@ -28,7 +28,7 @@ public class GestorDeTareas {
             System.out.println("\nElige una opcion a continuacion: ");
             var entrada = s.nextLine().trim();
             try {
-//                int casiOpcion = Integer.parseInt(entrada);
+                // int casiOpcion = Integer.parseInt(entrada);
                 return Integer.parseInt(entrada);
             } catch (NumberFormatException e) {
                 System.out.println("Error: Debes ingresar un número válido.");
@@ -41,7 +41,8 @@ public class GestorDeTareas {
         switch (op) {
 
             case 1 -> agregarTarea1(teclado);
-            // * El break está implícito en la propia flecha. Es imposible que "caiga" al siguiente case.
+            // * El break está implícito en la propia flecha. Es imposible que "caiga" al
+            // siguiente case.
             case 2 -> verTareas2();
             case 3 -> eliminarTarea3(teclado);
             case 4 -> editarTarea4(teclado);
@@ -57,7 +58,6 @@ public class GestorDeTareas {
 
     public void agregarTarea1(Scanner t) {
 
-
         // ! Nombre
         String nombreNuevaTarea;
         while (true) {
@@ -67,7 +67,8 @@ public class GestorDeTareas {
                 System.out.printf("\nNombre de tarea \"%s\" confirmado.", nombreNuevaTarea);
                 break;
             } else {
-                System.out.println("Error: Debes ingresar un nombre de tarea válido, de mas de un caracter. \nPrueba de nuevo:");
+                System.out.println(
+                        "Error: Debes ingresar un nombre de tarea válido, de mas de un caracter. \nPrueba de nuevo:");
             }
         }
 
@@ -76,7 +77,7 @@ public class GestorDeTareas {
         while (true) {
             System.out.println("\n\n¿Prioridad de la tarea? del 5 (mas urgente) al 1 (menos urgente)");
             prioridad = t.nextLine().trim();
-//             t.nextLine(); // limpiar buffer1
+            // t.nextLine(); // limpiar buffer1
 
             try {
                 if (Integer.parseInt(prioridad) < 1 || Integer.parseInt(prioridad) > 5) {
@@ -90,20 +91,11 @@ public class GestorDeTareas {
             }
         }
 
-        //! Id
-        int idt;
+        // ! Id
+        ultimoId++;
+        int idt = ultimoId;
 
-        if (mapaTareas.isEmpty()) {
-            idt = 1;
-        } else {
-            int idMaximo = mapaTareas.keySet().stream()
-                    .max(Integer::compare) //* referencia al método estático compare(int x, int y) de la clase Integer
-                    //* shorthand (una forma abreviada) para implementar la interfaz funcional Comparator<Integer>
-                    .get();
-            idt = idMaximo + 1;
-        }
-
-        //! Armador y asignador de Id
+        // ! Armador y asignador de Id
         Tarea tareaNueva = new Tarea(nombreNuevaTarea, Integer.parseInt(prioridad));
         mapaTareas.put(idt, tareaNueva);
 
@@ -143,7 +135,7 @@ public class GestorDeTareas {
             mapaTareas.forEach((id, tarea) -> {
                 System.out.print(id + " • ");
             });
-//            System.out.println();
+            // System.out.println();
 
             var longitudDelMapa = mapaTareas.size();
             System.out.printf("\n¿Qué tarea deseas eliminar? Existen %d tareas. Indica el id:%n",
@@ -182,7 +174,7 @@ public class GestorDeTareas {
                 } else {
                     System.out.println("\nNo ingresaste una respuesta valida; es si o no.");
                 }
-//                System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+                // System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             }
             break;
         }
@@ -195,124 +187,124 @@ public class GestorDeTareas {
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             return;
         }
-            while (true) {
-                System.out.print("\nLos ids de las tareas son: ");
-                mapaTareas.forEach((id, tarea) -> {
-                    System.out.print(id + " • ");
-                });
-                System.out.print("\nIngrese el ID de la tarea a editar (0 para cancelar): ");
+        while (true) {
+            System.out.print("\nLos ids de las tareas son: ");
+            mapaTareas.forEach((id, tarea) -> {
+                System.out.print(id + " • ");
+            });
+            System.out.print("\nIngrese el ID de la tarea a editar (0 para cancelar): ");
 
-                if (!t.hasNextInt()) {
-                    System.out.println("Error: Debe ingresar un número.");
-                    t.nextLine(); // Limpiar buffer
+            if (!t.hasNextInt()) {
+                System.out.println("Error: Debe ingresar un número.");
+                t.nextLine(); // Limpiar buffer
+                continue;
+            }
+
+            int idElegido = t.nextInt();
+            t.nextLine(); // Limpiar buffer
+
+            // Salir si el usuario ingresa 0
+            if (idElegido == 0) {
+                System.out.println("Operación cancelada.");
+                return;
+            }
+
+            // Verificar si el ID existe
+            if (!mapaTareas.containsKey(idElegido)) {
+                System.out.println("Error: No existe una tarea con el ID " + idElegido);
+                continue;
+            }
+
+            Tarea tareaAEditar = mapaTareas.get(idElegido);
+            boolean seguirEditando = true;
+
+            // Bucle de confirmación de edición
+            while (seguirEditando) {
+                System.out.println("\nTarea seleccionada:");
+                System.out.println(tareaAEditar);
+                System.out.print("¿Desea editar esta tarea? (si/no): ");
+                String respuesta = t.nextLine().trim().toLowerCase();
+
+                if (respuesta.equals("no")) {
+                    System.out.println("Operación cancelada.");
+                    seguirEditando = false;
+                    continue;
+                } else if (!respuesta.equals("si")) {
+                    System.out.println("Respuesta no válida. Por favor responda 'si' o 'no'.");
                     continue;
                 }
 
-                int idElegido = t.nextInt();
-                t.nextLine(); // Limpiar buffer
+                // Menú de edición
+                boolean enMenuEdicion = true;
+                while (enMenuEdicion) {
+                    System.out.println("\n¿Qué desea editar?");
+                    System.out.println("1. Nombre de la tarea");
+                    System.out.println("2. Prioridad");
+                    System.out.println("0. Volver al menú principal");
+                    // System.out.print("Opción: ");
 
-                // Salir si el usuario ingresa 0
-                if (idElegido == 0) {
-                    System.out.println("Operación cancelada.");
+                    if (!t.hasNextInt()) {
+                        System.out.println("\nError: Debe ingresar un número.");
+                        t.nextLine(); // Limpiar buffer
+                        continue;
+                    }
+
+                    int opcion = t.nextInt();
+                    t.nextLine(); // Limpiar buffer
+
+                    switch (opcion) {
+                        case 0 -> {
+                            System.out.println("\nVolviendo al menú principal...");
+                            enMenuEdicion = false;
+                            seguirEditando = false;
+                        }
+                        case 1 -> {
+                            System.out.print("\nNuevo nombre: ");
+                            String nuevoNombre = t.nextLine().trim();
+                            if (!nuevoNombre.isEmpty()) {
+                                tareaAEditar.setNombre(nuevoNombre);
+                                System.out.println("¡Nombre actualizado correctamente!");
+                            } else {
+                                System.out.println("El nombre no puede estar vacío.");
+                            }
+                        }
+                        case 2 -> {
+                            System.out.print("\nNueva prioridad (1-5): ");
+                            if (t.hasNextInt()) {
+                                int nuevaPrioridad = t.nextInt();
+                                t.nextLine(); // Limpiar buffer
+                                if (nuevaPrioridad >= 1 && nuevaPrioridad <= 5) {
+                                    tareaAEditar.setPrioridad(nuevaPrioridad);
+                                    System.out.println("¡Prioridad actualizada correctamente!");
+                                } else {
+                                    System.out.println("La prioridad debe estar entre 1 y 5.");
+                                }
+                            } else {
+                                System.out.println("Debe ingresar un número.");
+                                t.nextLine(); // Limpiar buffer
+                            }
+                        }
+                        default -> System.out.println("Opción no válida. Intente de nuevo.");
+                    }
+                }
+
+                // Preguntar si desea editar otra tarea
+                System.out.print("\n¿Desea editar otra tarea? (si/no): ");
+                String continuar = t.nextLine().trim().toLowerCase();
+                if (continuar.equals("no")) {
+                    System.out.println("Volviendo al menú principal...");
+                    return;
+                } else if (!continuar.equals("si")) {
+                    System.out.println("Respuesta no válida. Volviendo al menú principal...");
                     return;
                 }
 
-                // Verificar si el ID existe
-                if (!mapaTareas.containsKey(idElegido)) {
-                    System.out.println("Error: No existe una tarea con el ID " + idElegido);
-                    continue;
-                }
-
-                Tarea tareaAEditar = mapaTareas.get(idElegido);
-                boolean seguirEditando = true;
-
-                // Bucle de confirmación de edición
-                while (seguirEditando) {
-                    System.out.println("\nTarea seleccionada:");
-                    System.out.println(tareaAEditar);
-                    System.out.print("¿Desea editar esta tarea? (si/no): ");
-                    String respuesta = t.nextLine().trim().toLowerCase();
-
-                    if (respuesta.equals("no")) {
-                        System.out.println("Operación cancelada.");
-                        seguirEditando = false;
-                        continue;
-                    } else if (!respuesta.equals("si")) {
-                        System.out.println("Respuesta no válida. Por favor responda 'si' o 'no'.");
-                        continue;
-                    }
-
-                    // Menú de edición
-                    boolean enMenuEdicion = true;
-                    while (enMenuEdicion) {
-                        System.out.println("\n¿Qué desea editar?");
-                        System.out.println("1. Nombre de la tarea");
-                        System.out.println("2. Prioridad");
-                        System.out.println("0. Volver al menú principal");
-//                        System.out.print("Opción: ");
-
-                        if (!t.hasNextInt()) {
-                            System.out.println("\nError: Debe ingresar un número.");
-                            t.nextLine(); // Limpiar buffer
-                            continue;
-                        }
-
-                        int opcion = t.nextInt();
-                        t.nextLine(); // Limpiar buffer
-
-                        switch (opcion) {
-                            case 0 -> {
-                                System.out.println("\nVolviendo al menú principal...");
-                                enMenuEdicion = false;
-                                seguirEditando = false;
-                            }
-                            case 1 -> {
-                                System.out.print("\nNuevo nombre: ");
-                                String nuevoNombre = t.nextLine().trim();
-                                if (!nuevoNombre.isEmpty()) {
-                                    tareaAEditar.setNombre(nuevoNombre);
-                                    System.out.println("¡Nombre actualizado correctamente!");
-                                } else {
-                                    System.out.println("El nombre no puede estar vacío.");
-                                }
-                            }
-                            case 2 -> {
-                                System.out.print("\nNueva prioridad (1-5): ");
-                                if (t.hasNextInt()) {
-                                    int nuevaPrioridad = t.nextInt();
-                                    t.nextLine(); // Limpiar buffer
-                                    if (nuevaPrioridad >= 1 && nuevaPrioridad <= 5) {
-                                        tareaAEditar.setPrioridad(nuevaPrioridad);
-                                        System.out.println("¡Prioridad actualizada correctamente!");
-                                    } else {
-                                        System.out.println("La prioridad debe estar entre 1 y 5.");
-                                    }
-                                } else {
-                                    System.out.println("Debe ingresar un número.");
-                                    t.nextLine(); // Limpiar buffer
-                                }
-                            }
-                            default -> System.out.println("Opción no válida. Intente de nuevo.");
-                        }
-                    }
-
-                    // Preguntar si desea editar otra tarea
-                    System.out.print("\n¿Desea editar otra tarea? (si/no): ");
-                    String continuar = t.nextLine().trim().toLowerCase();
-                    if (continuar.equals("no")) {
-                        System.out.println("Volviendo al menú principal...");
-                        return;
-                    } else if (!continuar.equals("si")) {
-                        System.out.println("Respuesta no válida. Volviendo al menú principal...");
-                        return;
-                    }
-
-                    // Mostrar la lista de tareas nuevamente
-                    verTareas2();
-                    seguirEditando = true;
-                }
+                // Mostrar la lista de tareas nuevamente
+                verTareas2();
+                seguirEditando = true;
             }
         }
+    }
 
     public void limpiarLista5(Scanner t) {
 
@@ -342,10 +334,5 @@ public class GestorDeTareas {
         System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     }
 
-
-
-
-
-//? Cierre de toda la public class
- }
-
+    // ? Cierre de toda la public class
+}
