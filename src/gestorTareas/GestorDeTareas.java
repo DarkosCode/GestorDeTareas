@@ -90,14 +90,15 @@ public class GestorDeTareas {
             }
         }
 
-        // ! Id
+        //! Id
         int idt;
 
         if (mapaTareas.isEmpty()) {
             idt = 1;
         } else {
             int idMaximo = mapaTareas.keySet().stream()
-                    .max(Integer::compare)
+                    .max(Integer::compare) //* referencia al método estático compare(int x, int y) de la clase Integer
+                    //* shorthand (una forma abreviada) para implementar la interfaz funcional Comparator<Integer>
                     .get();
             idt = idMaximo + 1;
         }
